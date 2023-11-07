@@ -3,7 +3,7 @@
 from dbConfig import conn, cur
 def getList():
     #查詢
-    sql="select id, item,price, quantity from product_list where number>0 order by number desc;"
+    sql="select id, item,price, quantity from product_list where quantity>0 order by quantity desc;"
     cur.execute(sql)
     records = cur.fetchall()
     return records
@@ -14,29 +14,27 @@ def delgoods(id):
     conn.commit()
     return True
 
-def addgoods(name,price,number):
-    sql="insert into product_list (item,goods_price,number) values (%s,%s,%s);"
-    cur.execute(sql,(name,price,number))
+def addgoods(item,price,quantity):
+    sql="insert into product_list (item,price,quantity) values (%s,%s,%s);"
+    cur.execute(sql,(item,price,quantity))
     conn.commit()
     return True
 
 def getId(id):
-    sql="select id, item,goods_price, number from product_list where id = %s"
+    sql="select id, item,price, quantity from product_list where id = %s"
     cur.execute(sql,(id,))
     records = cur.fetchall()
     return records
 
-def revise(id,name,price,number):
-    sql = "update product_list set item=%s,goods_price=%s,number=%s where id=%s;"
-    cur.execute(sql,(name,price,number,id))
+def revise(id,item,price,quantity):
+    sql = "update product_list set item=%s,price=%s,quantity=%s where id=%s;"
+    cur.execute(sql,(item,price,quantity,id))
     conn.commit()
     return True
 
 
 def reduce(records):
     for record in records:
-        sql = "update product_list set number=number-%s where id = %s;"
+        sql = "update product_list set quantity=quantity-%s where id = %s;"
         cur.execute(sql,(record[1],record[0]))
         conn.commit()
-
-# 結帳後庫存減少

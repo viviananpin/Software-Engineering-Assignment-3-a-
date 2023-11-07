@@ -21,9 +21,9 @@ print("""
 """)
 
 form = cgi.FieldStorage()
-name=form.getvalue('name')
+item=form.getvalue('item')
 price=form.getvalue('price')
-number=form.getvalue('number')
+quantity=form.getvalue('quantity')
 
 
 goods.addgoods(name,price,number)
