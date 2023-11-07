@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>revise_Goods</title>
+</head>
+<body>
+<p>修改商品</p>
+<hr>
+<div >
+<fieldset>
+<legend>商品輸入表單</legend>
+<form method="post" action="revise.py">
+    <p>商品編號:###id###  <input type="text" name='id' value="###id###" readonly="readonly"></p>
+    <p>商品名稱:###item###   <input type="text" name='item'>修改名稱</p>
+    <p>商品價格:###price###  <input type="text" name='price'>修改價格</p>
+    <p>商品庫存:###quantity### <input type="text" name='quantity'>修改庫存</p>
+    <input type="submit">
+</form>
+</fieldset>
+</div>
+<div class="a"><a href='manager_control.py'>回管理清單</a></div>
+</body>
+</html>
