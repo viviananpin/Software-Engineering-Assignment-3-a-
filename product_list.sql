@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-11-07 14:26:10
+-- 產生時間： 2023-11-14 03:31:31
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -29,20 +29,26 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `product_list` (
   `id` int(11) NOT NULL,
-  `item` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `price` int(11) DEFAULT NULL,
-  `quantity` int(11) DEFAULT NULL
+  `jobName` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `jobUrgent` int(11) DEFAULT NULL,
+  `jobContent` int(11) DEFAULT NULL,
+  `jobDescription` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- 傾印資料表的資料 `product_list`
 --
 
-INSERT INTO `product_list` (`id`, `item`, `price`, `quantity`) VALUES
-(1, '手機', 1000, 2),
-(2, '電腦', 500, 3),
-(3, '平板', 800, 1),
-(4, '鍵盤', 400, 5);
+INSERT INTO `product_list` (`id`, `jobName`, `jobUrgent`, `jobContent`, `jobDescription`) VALUES
+(1, '手機', 1000, 2, ''),
+(2, '電腦', 500, 3, ''),
+(3, '平板', 800, 1, ''),
+(4, '鍵盤', 400, 5, ''),
+(9, '手機', 1003, 2, ''),
+(11, '手機', 1000, 2, '11111'),
+(12, '平板', 800, 111, ''),
+(13, '手機', 22222, 2, ''),
+(14, '蛤', 321, 123, '!!!!');
 
 --
 -- 已傾印資料表的索引
@@ -62,7 +68,7 @@ ALTER TABLE `product_list`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `product_list`
 --
 ALTER TABLE `product_list`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
