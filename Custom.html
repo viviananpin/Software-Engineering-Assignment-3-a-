@@ -8,30 +8,47 @@
 <div id="main">
 <div id="list" v-if="UI=='main'">
 	<h1>This is the main page.</h1>
-	<button @click="setAddUI()">Load Add Form</button>
+	<button @click="c_loadList()">購物車</button>
 	<table border=1>
 		<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>數量</td><td>-</td><td>內容</td></tr>
 		<tr v-for="job in dat">
 			<td>{{job.id}}</td>
 			<td>{{job.jobName}}</td>
 			<td>{{job.jobUrgent}}</td>
-			<td>{{job.jobContent}}</td>
-			<td><button @click="delJob(job.id)">刪</button><button @click="setEditUI(job)">改</button></td>
+			<td>{{job.purchaseAmount}}</td>
+			<td><button @click="setEditUI(job)">加入購物車</button></td>
             <td>{{job.jobDescription}}</td>
 		</tr>
 	</table>
 </div>
 <div v-if="UI=='editForm'">
-	商品名稱: <input type="text"  v-model="newJob.jobName"/> <br/>
+	商品名稱: <td>{{newJob.jobName}}</td> <br/>
     
-    價格: <input type="text"  v-model="newJob.jobUrgent"/> <br/>
+    價格: <td>{{newJob.jobUrgent}}</td> <br/>
 
-	數量: <textarea v-model="newJob.jobContent"></textarea><br>
+	購買數量: <textarea v-model="newJob.purchaseAmount"></textarea><br>
     
-    內容: <textarea v-model="newJob.jobDescription"></textarea><br>
+    內容: <td>{{newJob.jobDescription}}</td></textarea><br>
 
-	<input type='button' @click="addJob()" value="save">
+	<input type='button' @click="c_addJob()" value="save">
 </div>
+
+<div id="list" v-if="UI=='cart'">
+	<h1>This is the cart page.</h1>
+	<button @click="loadList()">商品清單</button>
+	<table border=1>
+		<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>數量</td><td>-</td><td>內容</td></tr>
+		<tr v-for="job in dat">
+			<td>{{job.id}}</td>
+			<td>{{job.jobName}}</td>
+			<td>{{job.jobUrgent}}</td>
+			<td>{{job.purchaseAmount}}</td>
+			<td><button @click="delJob(job)">從購物車移除</button></td>
+            <td>{{job.jobDescription}}</td>
+		</tr>
+	</table>
+</div>
+
 </div>
 <script>
 const todoApp= Vue.createApp({
@@ -49,7 +66,22 @@ const todoApp= Vue.createApp({
 		}
 	},
 	methods: {
-		loadList: function () {
+		c_loadList: function () {
+			const that=this; //this  ==> stands for vm6. let's save `this` to `that`
+			fetch('productControl.php?act=listPurchaseJob')
+			.then(function(response) {
+				return response.json();
+			})
+			.then(function(myJson) {
+				//we are inside the callback function, now `this` means the function, not vm6
+				//we will use `that` to access vm6
+
+				that.dat = myJson;
+				//todoApp.dat = myJson;
+                that.setUI('cart');
+			});
+		},
+        loadList: function () {
 			const that=this; //this  ==> stands for vm6. let's save `this` to `that`
 			fetch('productControl.php?act=listJob')
 			.then(function(response) {
@@ -61,6 +93,7 @@ const todoApp= Vue.createApp({
 
 				that.dat = myJson;
 				//todoApp.dat = myJson;
+                that.setUI('main');
 			});
 		},
 		delJob: function (id) {
@@ -92,6 +125,25 @@ const todoApp= Vue.createApp({
 				that.loadList();
 			})
 		},
+        
+        c_addJob: function () {
+			const that=this;
+			let mydat = new FormData();
+			mydat.append( "dat", JSON.stringify(this.newJob) );
+
+			let url="productControl.php?act=addCart";
+			fetch(url,{
+				method: 'POST',
+				body: mydat // 將表單物件放入fetch的body屬性
+			})
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){ 
+				console.log(data);
+				that.setUI('cart');
+				that.c_loadList();
+			})
+		},
+        
 		setEditUI: function(job) {
 			this.newJob=job;
 			this.setUI('editForm');
