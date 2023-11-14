@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Keeper</title>
+</head>
+
+<body>
+
+    <h1>賣家後台</h1>
+
+    <h2>新增商品</h2>
+    <form id="addProductForm">
+        商品名稱: <input type="text" name="item"><br>
+        價格: <input type="number" name="price"><br>
+        庫存: <select name="amount"><br>
+            <option value = "01" selected>01</option>
+            <option value = "02" selected>02</option>
+            <option value = "03" selected>03</option>
+            <option value = "04" selected>04</option>
+            <option value = "05" selected>05</option>
+            <option value = "06" selected>06</option>
+            <option value = "07" selected>07</option>
+            <option value = "08" selected>08</option>
+            <option value = "09" selected>09</option>
+            <option value = "10" selected>10</option>
+        </select> <br>
+
+        <br>
+
+        <button type="button" onclick="addProduct()">新增商品</button><br>
+    </form>
+
+    <!-- JavaScript -->
+    <script>
+        // Assume you have JavaScript functions to handle adding, editing, and deleting products
+        function addProduct() {
+            // Fetch form data and call a function to send it to the controller
+            // Example: Use fetch or AJAX to send the form data to the server
+            const form = document.getElementById('id');
+            const formData = new FormData(form);
+
+            fetch()
+        
+        }
+
+        function editProduct(id) {
+            // Function to edit a product, fetch data by ID and fill a form, for example
+        }
+
+        function deleteProduct(id) {
+            // Function to delete a product, call a controller method using fetch or AJAX, for example
+        }
+    </script>
+
+    <h2>商品清單</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>商品名稱</th>
+            <th>價格</th>
+            <th>庫存</th>
+            <th>操作</th>
+        </tr>
+        <!-- Placeholder for displaying products -->
+        <?php
+        // Assuming $products is passed from the controller
+        if (!empty($products)) {
+            foreach ($products as $product) {
+                echo "<tr>";
+                echo "<td>" . $product['id'] . "</td>";
+                echo "<td>" . $product['item'] . "</td>";
+                echo "<td>" . $product['price'] . "</td>";
+                echo "<td>" . $product['amount'] . "</td>";
+                echo "<td><button onclick='editProduct(" . $product['id'] . ")'>編輯</button> <button onclick='deleteProduct(" . $product['id'] . ")'>刪除</button></td>";
+                echo "</tr>";
+            }
+        }
+        ?>
+    </table>
+
+    
+</body>
+</html>

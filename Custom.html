@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Customer</title>
+</head>
+
+<body>
+
+    <h2>商品清單</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>商品名稱</th>
+            <th>價格</th>
+            <th>庫存</th>
+            <th>操作</th>
+        </tr>
+        <!-- Placeholder for displaying products -->
+        <?php
+        // Assuming $products is passed from the controller
+        if (!empty($products)) {
+            foreach ($products as $product) {
+                echo "<tr>";
+                echo "<td>" . $product['id'] . "</td>";
+                echo "<td>" . $product['item'] . "</td>";
+                echo "<td>" . $product['price'] . "</td>";
+                echo "<td>" . $product['amount'] . "</td>";
+                echo "<td><button onclick='Purchase(" . $product['id'] . ")'>加入購物車</button></td>";
+                echo "</tr>";
+            }
+        }
+        ?>
+    </table>
+
+    <!-- JavaScript -->
+    <script>
+        // Assume you have JavaScript functions to handle adding, editing, and deleting products
+        function DeleteProduct(id) {
+            // Fetch form data and call a function to send it to the controller
+            // Example: Use fetch or AJAX to send the form data to the server
+        }
+
+        
+
+    </script>
+
+    <h2>購物車</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>商品名稱</th>
+            <th>價格</th>
+            <th>庫存</th>
+            <th>操作</th>
+        </tr>
+        <!-- Placeholder for displaying products -->
+        <?php
+        // Assuming $products is passed from the controller
+        if (!empty($products)) {
+            foreach ($products as $product) {
+                echo "<tr>";
+                echo "<td>" . $product['id'] . "</td>";
+                echo "<td>" . $product['item'] . "</td>";
+                echo "<td>" . $product['price'] . "</td>";
+                echo "<td>" . $product['quantity'] . "</td>";
+                echo "<td><button onclick='DeleteProduct(" . $product['id'] . ")'>自購物車移除</button></td>";
+                echo "</tr>";
+            }
+        }
+        ?>
+    </table>
+
+    <h4>Total</h4>
+
+    
+</body>
+</html>
