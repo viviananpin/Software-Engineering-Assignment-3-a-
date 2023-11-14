@@ -15,25 +15,25 @@ function getJobList() {
 	return $rows;
 }
 
-function addJob($item,$price,$quantity) {
+function addJob($jobName,$jobUrgent,$jobContent,$jobDescription) {
 	global $db;
 
-	$sql = "insert into product_list (item, price, quantity) values (?, ?, ?)"; //SQL中的 ? 代表未來要用變數綁定進去的地方
+	$sql = "insert into product_list (jobName, jobUrgent, jobContent , jobDescription) values (?,?, ?, ?)"; //SQL中的 ? 代表未來要用變數綁定進去的地方
 	$stmt = mysqli_prepare($db, $sql); //prepare sql statement
-	mysqli_stmt_bind_param($stmt, "sss", $item, $price,$jobContent); //bind parameters with variables, with types "sss":string, string ,string
+	mysqli_stmt_bind_param($stmt, "ssss", $jobName, $jobUrgent,$jobContent, $jobDescription); //bind parameters with variables, with types "sss":string, string ,string
 	mysqli_stmt_execute($stmt);  //執行SQL
 	return True;
 }
 
-function updateJob($id, $item,$price,$jobContent) {
-	echo $id, $item,$price,$jobContent;
+function updateJob($id, $jobName,$jobUrgent,$jobContent,$jobDescription) {
+	echo $id, $jobName,$jobUrgent,$jobContent,$jobDescription;
 	return;
 }
 
 function delJob($id) {
 	global $db;
 
-	$sql = "delete from todo where id=?;"; //SQL中的 ? 代表未來要用變數綁定進去的地方
+	$sql = "delete from product_list where id=?;"; //SQL中的 ? 代表未來要用變數綁定進去的地方
 	$stmt = mysqli_prepare($db, $sql); //prepare sql statement
 	mysqli_stmt_bind_param($stmt, "i", $id); //bind parameters with variables, with types "sss":string, string ,string
 	mysqli_stmt_execute($stmt);  //執行SQL

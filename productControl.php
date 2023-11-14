@@ -12,7 +12,7 @@ case "addJob":
 	$jsonStr = $_POST['dat'];
 	$job = json_decode($jsonStr);
 	//should verify first
-	addJob($job->jobName,$job->jobUrgent,$job->jobContent);
+	addJob($job->jobName,$job->jobUrgent,$job->jobContent,$job->jobDescription);
 	return;
 case "delJob":
 	$id=(int)$_REQUEST['id']; //$_GET, $_REQUEST

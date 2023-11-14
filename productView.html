@@ -1,59 +1,118 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>商品管理</title>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="https://unpkg.com/vue@next"></script>
 </head>
-<body>
-    <h1>商品清單</h1>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>商品名稱</th>
-            <th>價格</th>
-            <th>庫存</th>
-            <th>操作</th>
-        </tr>
-        <!-- Placeholder for displaying products -->
-        <?php
-        // Assuming $products is passed from the controller
-        if (!empty($products)) {
-            foreach ($products as $product) {
-                echo "<tr>";
-                echo "<td>" . $product['id'] . "</td>";
-                echo "<td>" . $product['item'] . "</td>";
-                echo "<td>" . $product['price'] . "</td>";
-                echo "<td>" . $product['quantity'] . "</td>";
-                echo "<td><button onclick='editProduct(" . $product['id'] . ")'>編輯</button> <button onclick='deleteProduct(" . $product['id'] . ")'>刪除</button></td>";
-                echo "</tr>";
-            }
-        }
-        ?>
-    </table>
 
-    <h2>新增商品</h2>
-    <form id="addProductForm">
-        商品名稱: <input type="text" name="item"><br>
-        價格: <input type="number" name="price"><br>
-        庫存: <input type="number" name="quantity"><br>
-        <button type="button" onclick="addProduct()">新增商品</button>
-    </form>
+<body >
+<hr />
+<div id="main">
+<div id="list" v-if="UI=='main'">
+	<h1>This is the main page.</h1>
+	<button @click="setAddUI()">Load Add Form</button>
+	<table border=1>
+		<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>數量</td><td>-</td><td>內容</td></tr>
+		<tr v-for="job in dat">
+			<td>{{job.id}}</td>
+			<td>{{job.jobName}}</td>
+			<td>{{job.jobUrgent}}</td>
+			<td>{{job.jobContent}}</td>
+			<td><button @click="delJob(job.id)">刪</button><button @click="setEditUI(job)">改</button></td>
+            <td>{{job.jobDescription}}</td>
+		</tr>
+	</table>
+</div>
+<div v-if="UI=='editForm'">
+	商品名稱: <input type="text"  v-model="newJob.jobName"/> <br/>
+    
+    價格: <input type="text"  v-model="newJob.jobUrgent"/> <br/>
 
-    <!-- JavaScript -->
-    <script>
-        // Assume you have JavaScript functions to handle adding, editing, and deleting products
-        function addProduct() {
-            // Fetch form data and call a function to send it to the controller
-            // Example: Use fetch or AJAX to send the form data to the server
-        }
+	數量: <textarea v-model="newJob.jobContent"></textarea><br>
+    
+    內容: <textarea v-model="newJob.jobDescription"></textarea><br>
 
-        function editProduct(id) {
-            // Function to edit a product, fetch data by ID and fill a form, for example
-        }
+	<input type='button' @click="addJob()" value="save">
+</div>
+</div>
+<script>
+const todoApp= Vue.createApp({
+	data() {
+		return {
+			UI: 'main',
+			dat: [],
+			newJob: {
+				id: -1,
+				jobName: '',
+				jobUrgent: '',
+				jobContent: '',
+                jobDescription: ''
+			}
+		}
+	},
+	methods: {
+		loadList: function () {
+			const that=this; //this  ==> stands for vm6. let's save `this` to `that`
+			fetch('productControl.php?act=listJob')
+			.then(function(response) {
+				return response.json();
+			})
+			.then(function(myJson) {
+				//we are inside the callback function, now `this` means the function, not vm6
+				//we will use `that` to access vm6
 
-        function deleteProduct(id) {
-            // Function to delete a product, call a controller method using fetch or AJAX, for example
-        }
-    </script>
-</body>
-</html>
+				that.dat = myJson;
+				//todoApp.dat = myJson;
+			});
+		},
+		delJob: function (id) {
+			const that=this;
+			let url="productControl.php?act=delJob&id="+id;
+			fetch(url,{
+				method: 'POST'
+			})
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){
+				console.log(data);
+				that.loadList();
+			})
+		},
+		addJob: function () {
+			const that=this;
+			let mydat = new FormData();
+			mydat.append( "dat", JSON.stringify(this.newJob) );
+
+			let url="productControl.php?act=addJob";
+			fetch(url,{
+				method: 'POST',
+				body: mydat // 將表單物件放入fetch的body屬性
+			})
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){ 
+				console.log(data);
+				that.setUI('main');
+				that.loadList();
+			})
+		},
+		setEditUI: function(job) {
+			this.newJob=job;
+			this.setUI('editForm');
+		},
+		setAddUI: function() {
+			this.newJob={
+				id: -1,
+				jobName: '',
+				jobUrgent: '',
+				jobContent: '',
+                jobDescription:''
+			};
+			this.setUI('editForm');
+		},
+		setUI: function(page) {
+			this.UI=page;
+		}
+	},
+	created() {
+		this.loadList();
+	}
+}).mount("#main");
+</script>
+</body></html>
