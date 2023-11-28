@@ -28,7 +28,7 @@ case "addCart":
 	$jsonStr = $_POST['dat'];
 	$job = json_decode($jsonStr);
 	//should verify first
-	addCart($job->id,$job->purchaseAmount);
+	addCart($job->id,$job->jobContent,$job->purchaseAmount);
 	return;
 
 
@@ -37,6 +37,21 @@ case "delJob":
 	//verify
 	delJob($id);
 	return;
+
+case "delCart":
+	$id=(int)$_REQUEST['id']; //$_GET, $_REQUEST
+	//verify
+	delCart($id);
+	return;
+    
+case "createOrder":
+    $cartItems = $_POST['cartItems']; // 從 POST 請求中取得購物車的商品清單
+    createOrder($cartItems);
+    return;
+
+
+
+
 default:
   
 }

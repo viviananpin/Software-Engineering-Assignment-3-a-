@@ -18,6 +18,9 @@ function getJobList() {
 
 function getPurchaseList() {
 	global $db;
+	$sql = "update product_list set total_price = jobUrgent*purchaseAmount;";
+	$stmt = mysqli_prepare($db, $sql ); //precompile sql指令，建立statement 物件，以便執行SQL
+	mysqli_stmt_execute($stmt); //執行SQL
 	$sql = "select * from product_list WHERE purchaseAmount>0;";
 	$stmt = mysqli_prepare($db, $sql ); //precompile sql指令，建立statement 物件，以便執行SQL
 	mysqli_stmt_execute($stmt); //執行SQL
@@ -49,19 +52,42 @@ function addJob($jobID,$jobName,$jobUrgent,$jobContent,$jobDescription) {
 	return True;
 }
 
-function addCart($jobID,$purchaseAmount) {
+function addCart($jobID,$jobContent,$purchaseAmount) {
 	global $db;
     $sql = "update product_list set purchaseAmount=? where id=?"; //SQL中的 ? 代表未來要用變數綁定進去的地方
 	$stmt = mysqli_prepare($db, $sql); //prepare sql statement
-	mysqli_stmt_bind_param($stmt, "ii",$purchaseAmount, $jobID); //bind parameters with variables, with types "sss":string, string ,string
+    
+    
+    if($jobContent>=$purchaseAmount)
+    {
+    mysqli_stmt_bind_param($stmt, "ii",$purchaseAmount, $jobID); //bind parameters with variables, with types "sss":string, string ,string
     mysqli_stmt_execute($stmt);  //執行SQL
     return True;
+        
+    }
+    else
+    {
+    mysqli_stmt_bind_param($stmt, "ii",$jobContent, $jobID); //bind parameters with variables, with types "sss":string, string ,string
+    mysqli_stmt_execute($stmt);  //執行SQL
+    return True;
+        
+    }
+    
+	
 }
 function updateJob($id, $jobName,$jobUrgent,$jobContent,$jobDescription) {
 	echo $id, $jobName,$jobUrgent,$jobContent,$jobDescription;
 	return;
 }
+function delCart($id) {
+	global $db;
 
+	$sql = "update product_list set purchaseAmount=0 where id=?;"; //SQL中的 ? 代表未來要用變數綁定進去的地方
+	$stmt = mysqli_prepare($db, $sql); //prepare sql statement
+	mysqli_stmt_bind_param($stmt, "i", $id); //bind parameters with variables, with types "sss":string, string ,string
+	mysqli_stmt_execute($stmt);  //執行SQL
+	return True;
+}
 function delJob($id) {
 	global $db;
 
@@ -71,4 +97,36 @@ function delJob($id) {
 	mysqli_stmt_execute($stmt);  //執行SQL
 	return True;
 }
+
+// 在你的其他功能後面新增一個新的函式
+function createOrder($orderData) {
+    global $db;
+
+    // 假設 order 資料表中有 id、jobName、jobUrgent、jobContent、jobDescription 等欄位
+    $sql = "INSERT INTO `order` (id, jobName, jobUrgent, jobContent, jobDescription) VALUES (?, ?, ?, ?, ?)";
+
+    // 解析字串為陣列
+    $cartItems = json_decode($orderData, true);
+
+    // 使用迴圈處理購物車中的每個商品
+    foreach ($cartItems as $item) {
+        // 取得購物車商品的相關資訊
+        $id = $item['id'];
+        $jobName = $item['jobName'];
+        $jobUrgent = $item['jobUrgent'];
+        $jobContent = $item['jobContent'];
+        $jobDescription = $item['jobDescription'];
+
+        // 使用 prepared statement 預備 SQL 指令
+        $stmt = mysqli_prepare($db, $sql);
+        mysqli_stmt_bind_param($stmt, "isiis", $id, $jobName, $jobUrgent, $jobContent, $jobDescription);
+        mysqli_stmt_execute($stmt);
+    }
+
+    // 返回成功訊息或其他相關資訊
+    echo "Order created successfully.";
+    return;
+}
+
+
 ?>

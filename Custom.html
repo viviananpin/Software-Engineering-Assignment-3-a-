@@ -10,12 +10,12 @@
 	<h1>This is the main page.</h1>
 	<button @click="c_loadList()">購物車</button>
 	<table border=1>
-		<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>數量</td><td>-</td><td>內容</td></tr>
+		<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>-</td><td>內容</td></tr>
 		<tr v-for="job in dat">
 			<td>{{job.id}}</td>
 			<td>{{job.jobName}}</td>
 			<td>{{job.jobUrgent}}</td>
-			<td>{{job.purchaseAmount}}</td>
+
 			<td><button @click="setEditUI(job)">加入購物車</button></td>
             <td>{{job.jobDescription}}</td>
 		</tr>
@@ -37,16 +37,23 @@
 	<h1>This is the cart page.</h1>
 	<button @click="loadList()">商品清單</button>
 	<table border=1>
-		<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>數量</td><td>-</td><td>內容</td></tr>
+		<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>購買數量</td><td>-</td><td>內容</td></tr>
 		<tr v-for="job in dat">
 			<td>{{job.id}}</td>
 			<td>{{job.jobName}}</td>
 			<td>{{job.jobUrgent}}</td>
 			<td>{{job.purchaseAmount}}</td>
-			<td><button @click="delJob(job)">從購物車移除</button></td>
+			<td><button @click="delJob(job.id)">從購物車移除</button></td>
             <td>{{job.jobDescription}}</td>
 		</tr>
 	</table>
+    <td>總價:</td><td>{{total}}</td>
+    
+    <!-- 以下為新增的按鈕 -->
+    <button @click="createOrder(c_loadList())">送出訂單</button>
+
+</div>
+
 </div>
 
 </div>
@@ -62,7 +69,10 @@ const todoApp= Vue.createApp({
 				jobUrgent: '',
 				jobContent: '',
                 jobDescription: ''
-			}
+                
+                
+			},
+            total:0
 		}
 	},
 	methods: {
@@ -78,9 +88,36 @@ const todoApp= Vue.createApp({
 
 				that.dat = myJson;
 				//todoApp.dat = myJson;
+                that.total=0;
+                for(let i=0;i<that.dat.length;i++)
+                {
+                    that.total+=that.dat[i].total_price;
+                }
                 that.setUI('cart');
 			});
 		},
+        
+        createOrder: function () {
+    const that = this;
+    let mydat = new FormData();
+    mydat.append("cartItems", JSON.stringify(this.dat)); // 將購物車內容轉換成 JSON 格式並放入 FormData 中
+
+    let url = "productControl.php?act=createOrder";
+    fetch(url, {
+        method: 'POST',
+        body: mydat // 將資料放入 fetch 的 body 屬性
+    })
+    .then(function(res) {
+        return res.text();
+    })
+    .then(function(data) {
+        console.log(data);
+        // 可以在這裡加入額外的處理，例如清空購物車內容或顯示成功訊息
+    });
+},
+
+
+
         loadList: function () {
 			const that=this; //this  ==> stands for vm6. let's save `this` to `that`
 			fetch('productControl.php?act=listJob')
@@ -98,14 +135,14 @@ const todoApp= Vue.createApp({
 		},
 		delJob: function (id) {
 			const that=this;
-			let url="productControl.php?act=delJob&id="+id;
+			let url="productControl.php?act=delCart&id="+id;
 			fetch(url,{
 				method: 'POST'
 			})
 			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
 			.then(function(data){
 				console.log(data);
-				that.loadList();
+				that.c_loadList();
 			})
 		},
 		addJob: function () {
@@ -147,7 +184,8 @@ const todoApp= Vue.createApp({
 		setEditUI: function(job) {
 			this.newJob=job;
 			this.setUI('editForm');
-		},
+	
+	},
 		setAddUI: function() {
 			this.newJob={
 				id: -1,
