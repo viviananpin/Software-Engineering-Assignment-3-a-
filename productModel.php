@@ -103,25 +103,39 @@ function createOrder($orderData) {
     global $db;
 
     // 假設 order 資料表中有 id、jobName、jobUrgent、jobContent、jobDescription 等欄位
-    $sql = "INSERT INTO `order` (id, jobName, jobUrgent, jobContent, jobDescription) VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO `order` (orderID, id, jobName, jobUrgent, jobContent, jobDescription) VALUES (?, ?, ?, ?, ?, ?)";
 
     // 解析字串為陣列
     $cartItems = json_decode($orderData, true);
 
-    // 使用迴圈處理購物車中的每個商品
-    foreach ($cartItems as $item) {
-        // 取得購物車商品的相關資訊
-        $id = $item['id'];
-        $jobName = $item['jobName'];
-        $jobUrgent = $item['jobUrgent'];
-        $jobContent = $item['jobContent'];
-        $jobDescription = $item['jobDescription'];
+    // 取得購物車商品的相關資訊
+    $orderID = null; // 這裡暫時設置為 null，待後續處理
+    $id = [];
+    $jobNames = [];
+    $jobUrgents = [];
+    $jobContents = [];
+    $jobDescriptions = [];
 
-        // 使用 prepared statement 預備 SQL 指令
-        $stmt = mysqli_prepare($db, $sql);
-        mysqli_stmt_bind_param($stmt, "isiis", $id, $jobName, $jobUrgent, $jobContent, $jobDescription);
-        mysqli_stmt_execute($stmt);
+    // 取得所有商品的資訊
+    foreach ($cartItems as $item) {
+        $id[] = $item['id'];
+        $jobNames[] = $item['jobName'];
+        $jobUrgents[] = $item['jobUrgent'];
+        $jobContents[] = $item['jobContent'];
+        $jobDescriptions[] = $item['jobDescription'];
     }
+
+    // 將取得的商品資訊用逗號連接成字串
+    $idStr = implode(',', $id);
+    $jobNamesStr = implode(',', $jobNames);
+    $jobUrgentsStr = implode(',', $jobUrgents);
+    $jobContentsStr = implode(',', $jobContents);
+    $jobDescriptionsStr = implode(',', $jobDescriptions);
+
+    // 使用 prepared statement 預備 SQL 指令
+    $stmt = mysqli_prepare($db, $sql);
+    mysqli_stmt_bind_param($stmt, "iissss", $orderID, $idStr, $jobNamesStr, $jobUrgentsStr, $jobContentsStr, $jobDescriptionsStr);
+    mysqli_stmt_execute($stmt);
 
     // 返回成功訊息或其他相關資訊
     echo "Order created successfully.";
