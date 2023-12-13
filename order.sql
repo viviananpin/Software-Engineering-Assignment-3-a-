@@ -29,11 +29,11 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `order` (
   `orderID` int(11) NOT NULL,
-  `id` varchar(11) NOT NULL,
-  `jobName` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `jobUrgent` varchar(11) DEFAULT NULL,
-  `jobContent` varchar(11) DEFAULT NULL,
-  `jobDescription` varchar(50) NOT NULL,
+  `c_id` varchar(11) NOT NULL,
+  `c_jobName` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `c_jobUrgent` varchar(11) DEFAULT NULL,
+  `c_jobContent` varchar(11) DEFAULT NULL,
+  `c_jobDescription` varchar(50) NOT NULL,
   `sellerID` int(11) NOT NULL,
   `customID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -42,7 +42,7 @@ CREATE TABLE `order` (
 -- 傾印資料表的資料 `order`
 --
 
-INSERT INTO `order` (`orderID`, `id`, `jobName`, `jobUrgent`, `jobContent`, `jobDescription`, `sellerID`, `customID`) VALUES
+INSERT INTO `order` (`orderID`, `c_id`, `c_jobName`, `c_jobUrgent`, `c_jobContent`, `c_jobDescription`, `sellerID`, `customID`) VALUES
 (14, '3,52', '平板,商品C', '800,300', '1,10', ',Cc', 0, 0),
 (15, '3,4,52', '平板,鍵盤,商品C', '800,400,300', '1,5,10', ',,Cc', 0, 0),
 (16, '1,3,52', '手機,平板,商品C', '1000,800,30', '2,1,10', ',,Cc', 0, 0);
