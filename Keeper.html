@@ -1,0 +1,209 @@
+<html><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="https://unpkg.com/vue@next"></script>
+    </head>
+    
+    <body >
+    <hr />
+    <div id="Custom_main">
+    <div id="Custom_list" v-if="UI=='Custom_main'">
+        <h1>This is the Custom page.</h1>
+        <button @click="Custom_loadList()">購物車</button>
+        <table border=1>
+            <tr><td>序號</td><td>商品名稱</td><td>價格</td><td>-</td><td>內容</td></tr>
+            <tr v-for="Custom_job in c_dat">
+                <td>{{Custom_job.id}}</td>
+                <td>{{Custom_job.jobName}}</td>
+                <td>{{Custom_job.jobUrgent}}</td>
+    
+                <td><button @click="Custom_setEditUI(Custom_job)">加入購物車</button></td>
+                <td>{{Custom_job.jobDescription}}</td>
+            </tr>
+        </table>
+    </div>
+    <div v-if="UI=='Custom_editForm'">
+        商品名稱: <td>{{Custom_newJob.jobName}}</td> <br/>
+        
+        價格: <td>{{Custom_newJob.jobUrgent}}</td> <br/>
+    
+        購買數量: <textarea v-model="Custom_newJob.purchaseAmount"></textarea><br>
+        
+        內容: <td>{{Custom_newJob.jobDescription}}</td></textarea><br>
+    
+        <input type='button' @click="Custom_addJob()" value="save">
+    </div>
+    
+    <div id="list" v-if="UI=='cart'">
+        <h1>This is the cart page.</h1>
+        <button @click="Custom_loadList()">商品清單</button>
+        <table border=1>
+            <tr><td>序號</td><td>商品名稱</td><td>價格</td><td>購買數量</td><td>-</td><td>內容</td></tr>
+            <tr v-for="Custom_job in c_dat">
+                <td>{{Custom_job.id}}</td>
+                <td>{{Custom_job.jobName}}</td>
+                <td>{{Custom_job.jobUrgent}}</td>
+                <td>{{Custom_job.purchaseAmount}}</td>
+                <td><button @click="Custom_delJob(Custom_job.id)">從購物車移除</button></td>
+                <td>{{Custom_job.jobDescription}}</td>
+            </tr>
+        </table>
+        <td>總價:</td><td>{{total}}</td>
+        
+        <!-- 以下為新增的按鈕 -->
+        <button @click="Custom_createOrder(Custom_loadList())">送出訂單</button>
+    
+    </div>
+    
+    </div>
+    
+    </div>
+    <script>
+    const todoApp= Vue.createApp({
+        Custom_data() {
+            return {
+                UI: 'Custom_main',
+                c_dat: [],
+                Custom_newJob: {
+                    id: -1,
+                    jobName: '',
+                    jobUrgent: '',
+                    jobContent: '',
+                    jobDescription: ''
+                    
+                    
+                },
+                total:0
+            }
+        },
+        methods: {
+        
+    
+            Custom_loadList: function () {
+                const that=this; //this  ==> stands for vm6. let's save `this` to `that`
+                fetch('productControl.php?act=listPurchaseJob')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(myJson) {
+                    //we are inside the callback function, now `this` means the function, not vm6
+                    //we will use `that` to access vm6
+    
+                    that.dat = myJson;
+                    //todoApp.dat = myJson;
+                    that.total=0;
+                    for(let i=0;i<that.dat.length;i++)
+                    {
+                        that.total+=that.dat[i].total_price;
+                    }
+                    that.setUI('cart');
+                });
+            },
+            
+            Custom_createOrder: function () {
+        const that = this;
+        let mydat = new FormData();
+        mydat.append("cartItems", JSON.stringify(this.dat)); // 將購物車內容轉換成 JSON 格式並放入 FormData 中
+    
+        let url = "productControl.php?act=createOrder";
+        fetch(url, {
+            method: 'POST',
+            body: mydat // 將資料放入 fetch 的 body 屬性
+        })
+        .then(function(res) {
+            return res.text();
+        })
+        .then(function(data) {
+            console.log(data);
+            // 可以在這裡加入額外的處理，例如清空購物車內容或顯示成功訊息
+        });
+    },
+    
+    
+    
+            Custom_loadList: function () {
+                const that=this; //this  ==> stands for vm6. let's save `this` to `that`
+                fetch('productControl.php?act=listJob')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(myJson) {
+                    //we are inside the callback function, now `this` means the function, not vm6
+                    //we will use `that` to access vm6
+    
+                    that.dat = myJson;
+                    //todoApp.dat = myJson;
+                    that.setUI('Custom_main');
+                });
+            },
+            Custom_delJob: function (Custom_id) {
+                const that=this;
+                let url="productControl.php?act=delCart&id="+Custom_id;
+                fetch(url,{
+                    method: 'POST'
+                })
+                .then(function(res){return res.text(); }) //取得傳回值，轉為文字
+                .then(function(data){
+                    console.log(data);
+                    that.Custom__loadList();
+                })
+            },
+            Custom_addJob: function () {
+                const that=this;
+                let mydat = new FormData();
+                mydat.append( "dat", JSON.stringify(this.Custom_newJob) );
+    
+                let url="productControl.php?act=addJob";
+                fetch(url,{
+                    method: 'POST',
+                    body: mydat // 將表單物件放入fetch的body屬性
+                })
+                .then(function(res){return res.text(); }) //取得傳回值，轉為文字
+                .then(function(data){ 
+                    console.log(data);
+                    that.setUI('Custom_main');
+                    that.Custom_loadList();
+                })
+            },
+            
+            Custom_addJob: function () {
+                const that=this;
+                let mydat = new FormData();
+                mydat.append( "dat", JSON.stringify(this.Custom_newJob) );
+    
+                let url="productControl.php?act=addCart";
+                fetch(url,{
+                    method: 'POST',
+                    body: mydat // 將表單物件放入fetch的body屬性
+                })
+                .then(function(res){return res.text(); }) //取得傳回值，轉為文字
+                .then(function(data){ 
+                    console.log(data);
+                    that.setUI('cart');
+                    that.Custom_loadList();
+                })
+            },
+            
+            Custom_etEditUI: function(Custom_job) {
+                this.Custom_newJob=Custom_job;
+                this.setUI('Custom_editForm');
+            },
+            Custom_setAddUI: function() {
+                this.Custom_newJob={
+                    id: -1,
+                    jobName: '',
+                    jobUrgent: '',
+                    jobContent: '',
+                    jobDescription:''
+                };
+                this.setUI('Custom_editForm');
+            },
+            setUI: function(page) {
+                this.UI=page;
+            }
+        },
+        Custom_created() {
+            this.Custom_loadList();
+        }
+    }).mount("#main");
+    </script>
+    </body></html>

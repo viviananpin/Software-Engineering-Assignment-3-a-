@@ -11,7 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -28,14 +27,15 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `product_list` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `jobName` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `jobUrgent` int(11) DEFAULT NULL,
   `jobContent` int(11) DEFAULT NULL,
   `jobDescription` varchar(50) NOT NULL,
   `purchaseAmount` int(11) NOT NULL,
   `total_price` int(11) NOT NULL,
-  `sellerID` int(11) NOT NULL
+  `sellerID` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -62,16 +62,6 @@ INSERT INTO `product_list` (`id`, `jobName`, `jobUrgent`, `jobContent`, `jobDesc
 
 --
 -- 資料表索引 `product_list`
---
-ALTER TABLE `product_list`
-  ADD PRIMARY KEY (`id`);
-
---
--- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
---
-
---
--- 使用資料表自動遞增(AUTO_INCREMENT) `product_list`
 --
 ALTER TABLE `product_list`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;

@@ -3,11 +3,11 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 CREATE TABLE `Keeper` (
-  `id` int(11) NOT NULL,
-  `Product` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `Price` int(11) DEFAULT NULL,
-  `Amount` int(11) DEFAULT NULL,
-  `Detail` varchar(50) NOT NULL
+  `c_id` int(11) NOT NULL,
+  `c_Product` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `c_Price` int(11) DEFAULT NULL,
+  `c_Amount` int(11) DEFAULT NULL,
+  `c_Detail` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
