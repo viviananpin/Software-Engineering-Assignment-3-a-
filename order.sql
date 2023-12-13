@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-12-13 02:52:00
+-- 產生時間： 2023-12-13 04:29:13
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -44,7 +44,8 @@ CREATE TABLE `order` (
 
 INSERT INTO `order` (`orderID`, `id`, `jobName`, `jobUrgent`, `jobContent`, `jobDescription`, `sellerID`, `customID`) VALUES
 (14, '3,52', '平板,商品C', '800,300', '1,10', ',Cc', 0, 0),
-(15, '3,4,52', '平板,鍵盤,商品C', '800,400,300', '1,5,10', ',,Cc', 0, 0);
+(15, '3,4,52', '平板,鍵盤,商品C', '800,400,300', '1,5,10', ',,Cc', 0, 0),
+(16, '1,3,52', '手機,平板,商品C', '1000,800,30', '2,1,10', ',,Cc', 0, 0);
 
 --
 -- 已傾印資料表的索引
@@ -64,7 +65,7 @@ ALTER TABLE `order`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `order`
 --
 ALTER TABLE `order`
-  MODIFY `orderID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `orderID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

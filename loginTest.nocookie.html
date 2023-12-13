@@ -1,0 +1,153 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="https://unpkg.com/vue@next"></script>
+<!--
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+-->
+</head>
+
+<body >
+<hr />
+<div id="main">
+<div id="list" v-if="UI=='main'">
+	<h1>This is the main page.</h1>
+	<hr/>
+	<input type='button' @click="logout()" value="logout"/>
+
+	
+</div>
+<div v-if="UI=='loginForm'">
+	Account: <input type="text"  v-model="account"/> <br/>
+	Password: <input type="text" v-model="pwd" />
+	<input type='button' @click="login()" value="login"/> <br/>
+    <input type='button' @click="setEditUI()" value="sign up"/>
+</div>
+
+<div v-if="UI=='signinForm'">
+    
+    帳號: <input type="text"  v-model="account"/> <br/>
+
+	密碼:  <input type="text" v-model="pwd" /><br/>
+    
+    角色: <input type="text"  v-model="role"/> 
+
+	<input type='button' @click="signin()" value="save">
+</div>
+	<hr/>
+	{{info}}
+	<input type='button' @click="loadInfo()" value="load Info"/> <br/>
+</div>
+<script>
+const role=function() {
+	let a=10;
+	function get() {
+	return a;
+	}
+}
+const todoApp= Vue.createApp({
+	data() {
+		return {
+			UI: '',
+			id: '',
+			pwd: '',
+			info: 'xx',
+			myRole: 0
+		}
+	},
+	methods: {
+		setUI: function(page) {
+			this.UI=page;
+		},
+        setEditUI: function() {
+			this.setUI('signinForm');
+		},
+		checkLogin: function() {
+			/*
+			const role=Cookies.get('loginRole');
+			sessionStorage.setItem('role', role)
+			console.log(role, this.login.myRole);
+			*/
+			if (this.myRole >0) {
+				this.setUI('main');
+			} else {
+				this.setUI('loginForm');
+			}
+		},
+		login: function() {
+				const that=this;
+				let mydat = new FormData();
+				mydat.append( "account", this.account);
+				// you may also use document.getElementById('loginID').value to get that field
+				mydat.append( "pwd", this.pwd);
+				mydat.append( "act", 'login');
+
+				let url="loginCheck.php";
+				//url="loginCheck.py";
+				fetch(url,{
+					method: 'POST',
+					body: mydat // 將表單物件放入fetch的body屬性
+				})
+				.then(function(res){return res.json(); }) //取得傳回值，轉為json
+				.then(function(data){
+					console.log(data);
+					//server 設定的cookie,httponly:true時, client 端讀不到,使用json裡的資料
+					that.myRole = data.role;
+					that.checkLogin();
+				})
+		},
+        signin: function () {
+			const that=this;
+			let mydat = new FormData();
+			mydat.append( "account",(this.account) );
+            mydat.append( "pwd",(this.pwd) );
+            mydat.append( "role",(this.role) );
+
+			let url="loginCheck.php?act=signin";
+			fetch(url,{
+				method: 'POST',
+				body: mydat // 將表單物件放入fetch的body屬性
+			})
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){ 
+				console.log(data);
+				that.setUI('signinForm');
+				//that.loadList();
+			})
+		},
+		loadInfo: function() {
+				const that=this;
+				let mydat = new FormData();
+				mydat.append( "act", 'showInfo');
+				let url="loginCheck.php";
+				//url="loginCheck.py";
+				fetch(url,{
+					method: 'POST',
+					body: mydat
+				})
+				.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+				.then(function(data){
+					that.info = data;
+				})
+		},
+		logout: function() {
+			//發request請server改cookie
+			const that=this;
+			let url="loginCheck.php?act=logout";
+			fetch(url)
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){
+				//調整local的變數
+				that.myRole = 0;
+				that.checkLogin();
+			})
+		},
+		
+        
+	},
+	created() {
+		this.checkLogin();
+	}
+}).mount("#main");
+
+</script>
+</body></html>
