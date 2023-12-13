@@ -9,13 +9,7 @@
 <body >
 <hr />
 <div id="main">
-<div id="list" v-if="UI=='log_in_main'">
-	<h1>This is the main page.</h1>
-	<hr/>
-	<input type='button' @click="logout()" value="logout"/>
 
-	
-</div>
 <div v-if="UI=='loginForm'">
 	Account: <input type="text"  v-model="account"/> <br/>
 	Password: <input type="text" v-model="pwd" />
@@ -23,7 +17,7 @@
     <input type='button' @click="setEditUI()" value="sign up"/>
 </div>
 
-<div v-if="UI=='signinForm'">
+<div v-if="UI=='signupForm'">
     
     帳號: <input type="text"  v-model="account"/> <br/>
 
@@ -31,12 +25,13 @@
     
     角色: <input type="text"  v-model="role"/> 
 
-	<input type='button' @click="signin()" value="save">
+	<input type='button' @click="signup()" value="save">
+
 </div>
 	<hr/>
 	{{info}}
 	<input type='button' @click="loadInfo()" value="load Info"/> <br/>
-    <input type='button' @click="logout()" value="log out"/> <br/>
+    
 </div>
 <script>
 const role=function() {
@@ -60,7 +55,7 @@ const todoApp= Vue.createApp({
 			this.UI=page;
 		},
         setEditUI: function() {
-			this.setUI('signinForm');
+			this.setUI('signupForm');
 		},
 		checkLogin: function() {
 			/*
@@ -68,8 +63,8 @@ const todoApp= Vue.createApp({
 			sessionStorage.setItem('role', role)
 			console.log(role, this.login.myRole);
 			*/
-			if (this.myRole >0) {
-				this.setUI('log_in_main');
+			if (this.myRole !=null) {
+				this.setUI('loginForm');
 			} else {
 				this.setUI('loginForm');
 			}
@@ -96,7 +91,7 @@ const todoApp= Vue.createApp({
 					that.checkLogin();
 				})
 		},
-        signin: function () {
+        signup: function () {
 			const that=this;
 			let mydat = new FormData();
 			mydat.append( "account",(this.account) );
@@ -111,8 +106,9 @@ const todoApp= Vue.createApp({
 			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
 			.then(function(data){ 
 				console.log(data);
-				that.setUI('signinForm');
+				//that.setUI('signupForm');
 				//that.loadList();
+                that.setUI('loginForm');
 			})
 		},
 		loadInfo: function() {
@@ -140,11 +136,19 @@ const todoApp= Vue.createApp({
 				//調整local的變數
 				that.myRole = 0;
 				that.checkLogin();
+                that.setUI('loginForm');
 			})
+            
 		},
 		
         
 	},
+    
+    
+    
+    
+    
+    
 	created() {
 		this.checkLogin();
 	}

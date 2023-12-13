@@ -6,9 +6,9 @@
 <body >
 <hr />
 <div id="main">
-<div id="list" v-if="UI=='main'">
+<div id="list" v-if="UI=='p_main'">
 	<h1>This is the main page.</h1>
-	<button @click="setAddUI()">Load Add Form</button>
+	<button @click="p_setAddUI()">Load Add Form</button>
     <button @click="o_loadList()">檢視訂單</button>
 	<table border=1>
 		<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>數量</td><td>-</td><td>內容</td></tr>
@@ -17,7 +17,7 @@
 			<td>{{job.jobName}}</td>
 			<td>{{job.jobUrgent}}</td>
 			<td>{{job.jobContent}}</td>
-			<td><button @click="delJob(job.id)">刪</button><button @click="setEditUI(job)">改</button></td>
+			<td><button @click="p_delJob(job.id)">刪</button><button @click="p_setEditUI(job)">改</button></td>
             <td>{{job.jobDescription}}</td>
 		</tr>
 	</table>
@@ -32,7 +32,7 @@
 			<td>{{job.jobName}}</td>
 			<td>{{job.jobUrgent}}</td>
 			<td>{{job.purchaseAmount}}</td>
-			<td><button @click="delJob(job.id)">從購物車移除</button></td>
+			<td><button @click="p_delJob(job.id)">從購物車移除</button></td>
             <td>{{job.jobDescription}}</td>
 		</tr>
 	</table>
@@ -40,7 +40,7 @@
 </div>
 
 
-<div v-if="UI=='editForm'">
+<div v-if="UI=='p_editForm'">
 	商品名稱: <input type="text"  v-model="newJob.jobName"/> <br/>
     
     價格: <input type="text"  v-model="newJob.jobUrgent"/> <br/>
@@ -49,15 +49,14 @@
     
     內容: <textarea v-model="newJob.jobDescription"></textarea><br>
 
-	<input type='button' @click="addJob()" value="save">
+	<input type='button' @click="p_addJob()" value="save">
 </div>
-
 </div>
 <script>
 const todoApp= Vue.createApp({
 	data() {
 		return {
-			UI: 'main',
+			UI: 'p_main',
 			dat: [],
 			newJob: {
 				id: -1,
@@ -71,7 +70,7 @@ const todoApp= Vue.createApp({
 	methods: {
     
  
-		loadList: function () {
+		p_loadList: function () {
 			const that=this; //this  ==> stands for vm6. let's save `this` to `that`
 			fetch('productControl.php?act=listJob')
 			.then(function(response) {
@@ -86,7 +85,7 @@ const todoApp= Vue.createApp({
 			});
 		},
 
-		delJob: function (id) {
+		p_delJob: function (id) {
 			const that=this;
 			let url="productControl.php?act=delJob&id="+id;
 			fetch(url,{
@@ -95,10 +94,10 @@ const todoApp= Vue.createApp({
 			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
 			.then(function(data){
 				console.log(data);
-				that.loadList();
+				that.p_loadList();
 			})
 		},
-		addJob: function () {
+		p_addJob: function () {
 			const that=this;
 			let mydat = new FormData();
 			mydat.append( "dat", JSON.stringify(this.newJob) );
@@ -111,15 +110,15 @@ const todoApp= Vue.createApp({
 			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
 			.then(function(data){ 
 				console.log(data);
-				that.setUI('main');
-				that.loadList();
+				that.setUI('p_main');
+				that.p_loadList();
 			})
 		},
-		setEditUI: function(job) {
+		p_setEditUI: function(job) {
 			this.newJob=job;
-			this.setUI('editForm');
+			this.setUI('p_editForm');
 		},
-		setAddUI: function() {
+		p_setAddUI: function() {
 			this.newJob={
 				id: -1,
 				jobName: '',
@@ -127,14 +126,14 @@ const todoApp= Vue.createApp({
 				jobContent: '',
                 jobDescription:''
 			};
-			this.setUI('editForm');
+			this.setUI('p_editForm');
 		},
 		setUI: function(page) {
 			this.UI=page;
 		}
 	},
 	created() {
-		this.loadList();
+		this.p_loadList();
 	}
 }).mount("#main");
 </script>
