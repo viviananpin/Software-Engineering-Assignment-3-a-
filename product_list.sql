@@ -27,22 +27,22 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `product_list` (
-  `c_id` int(11) NOT NULL AUTO_INCREMENT,
-  `c_jobName` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `c_jobUrgent` int(11) DEFAULT NULL,
-  `c_jobContent` int(11) DEFAULT NULL,
-  `c_jobDescription` varchar(50) NOT NULL,
-  `c_purchaseAmount` int(11) NOT NULL,
-  `c_total_price` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `jobName` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `jobUrgent` int(11) DEFAULT NULL,
+  `jobContent` int(11) DEFAULT NULL,
+  `jobDescription` varchar(50) NOT NULL,
+  `purchaseAmount` int(11) NOT NULL,
+  `total_price` int(11) NOT NULL,
   `sellerID` int(11) NOT NULL,
-  PRIMARY KEY (`c_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- 傾印資料表的資料 `product_list`
 --
 
-INSERT INTO `product_list` (`c_id`, `c_jobName`, `c_jobUrgent`, `c_jobContent`, `c_jobDescription`, `c_purchaseAmount`, `c_total_price`, `sellerID`) VALUES
+INSERT INTO `product_list` (`id`, `jobName`, `jobUrgent`, `jobContent`, `jobDescription`, `purchaseAmount`, `total_price`, `sellerID`) VALUES
 (1, '手機', 1000, 2, '', 1, 1000, 0),
 (2, '電腦', 500, 3, '', 0, 0, 0),
 (3, '平板', 800, 1, '', 1, 800, 0),
@@ -64,7 +64,7 @@ INSERT INTO `product_list` (`c_id`, `c_jobName`, `c_jobUrgent`, `c_jobContent`, 
 -- 資料表索引 `product_list`
 --
 ALTER TABLE `product_list`
-  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
