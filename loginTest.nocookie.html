@@ -9,7 +9,7 @@
 <body >
 <hr />
 <div id="main">
-<div id="list" v-if="UI=='main'">
+<div id="list" v-if="UI=='log_in_main'">
 	<h1>This is the main page.</h1>
 	<hr/>
 	<input type='button' @click="logout()" value="logout"/>
@@ -69,7 +69,7 @@ const todoApp= Vue.createApp({
 			console.log(role, this.login.myRole);
 			*/
 			if (this.myRole >0) {
-				this.setUI('main');
+				this.setUI('log_in_main');
 			} else {
 				this.setUI('loginForm');
 			}
