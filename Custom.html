@@ -6,6 +6,8 @@
 <body >
 <hr />
 <div id="main">
+
+
 <div id="list" v-if="UI=='buyer_main'">
 	<h1>This is the main page.</h1>
 	<button @click="cart_loadList()">購物車</button>
@@ -61,7 +63,7 @@
 const todoApp= Vue.createApp({
 	data() {
 		return {
-			UI: 'buyer_main',
+			UI:,
 			dat: [],
 			newJob: {
 				id: -1,

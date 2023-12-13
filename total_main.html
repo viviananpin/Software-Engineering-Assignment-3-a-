@@ -1,0 +1,421 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="https://unpkg.com/vue@next"></script>
+<!--
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+-->
+</head>
+
+<body >
+<hr />
+<div id="main">
+
+<div v-if="UI=='loginForm'">
+	Account: <input type="text"  v-model="account"/> <br/>
+	Password: <input type="text" v-model="pwd" />
+	<input type='button' @click="login()" value="log in"/> <br/>
+    <input type='button' @click="setEditUI()" value="sign up"/>
+</div>
+
+<div v-if="UI=='signupForm'">
+    
+    帳號: <input type="text"  v-model="account"/> <br/>
+
+	密碼:  <input type="text" v-model="pwd" /><br/>
+    
+    角色: <input type="text"  v-model="role"/> 
+
+	<input type='button' @click="signup()" value="save">
+
+</div>
+<div id="list" v-if="UI=='buyer_main'">
+	<h1>This is the main page.</h1>
+	<button @click="cart_loadList()">購物車</button>
+	<table border=1>
+		<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>-</td><td>內容</td></tr>
+		<tr v-for="job in dat">
+			<td>{{job.id}}</td>
+			<td>{{job.jobName}}</td>
+			<td>{{job.jobUrgent}}</td>
+
+			<td><button @click="c_setEditUI(job)">加入購物車</button></td>
+            <td>{{job.jobDescription}}</td>
+		</tr>
+	</table>
+</div>
+<div v-if="UI=='c_editForm'">
+	商品名稱: <td>{{newJob.jobName}}</td> <br/>
+    
+    價格: <td>{{newJob.jobUrgent}}</td> <br/>
+
+	購買數量: <textarea v-model="newJob.purchaseAmount"></textarea><br>
+    
+    內容: <td>{{newJob.jobDescription}}</td></textarea><br>
+
+	<input type='button' @click="cart_addJob()" value="save">
+</div>
+
+<div id="list" v-if="UI=='cart'">
+	<h1>This is the cart page.</h1>
+	<button @click="c_loadList()">商品清單</button>
+	<table border=1>
+		<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>購買數量</td><td>-</td><td>內容</td></tr>
+		<tr v-for="job in dat">
+			<td>{{job.id}}</td>
+			<td>{{job.jobName}}</td>
+			<td>{{job.jobUrgent}}</td>
+			<td>{{job.purchaseAmount}}</td>
+			<td><button @click="c_delJob(job.id)">從購物車移除</button></td>
+            <td>{{job.jobDescription}}</td>
+		</tr>
+	</table>
+    <td>總價:</td><td>{{total}}</td>
+    
+    <!-- 以下為新增的按鈕 -->
+    <button @click="createOrder(cart_loadList())">送出訂單</button>
+
+</div>
+	<hr/>
+	{{info}}
+	<input type='button' @click="loadInfo()" value="load Info"/> <br/>
+    
+
+<div id="list" v-if="UI=='p_main'">
+	<h1>This is the main page.</h1>
+	<button @click="p_setAddUI()">Load Add Form</button>
+    <button @click="o_loadList()">檢視訂單</button>
+	<table border=1>
+		<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>數量</td><td>-</td><td>內容</td></tr>
+		<tr v-for="job in dat">
+			<td>{{job.id}}</td>
+			<td>{{job.jobName}}</td>
+			<td>{{job.jobUrgent}}</td>
+			<td>{{job.jobContent}}</td>
+			<td><button @click="p_delJob(job.id)">刪</button><button @click="p_setEditUI(job)">改</button></td>
+            <td>{{job.jobDescription}}</td>
+		</tr>
+	</table>
+</div>
+
+<div id="list" v-if="UI=='order'">
+	<h1>This is the order page.</h1>
+	<table border=1>
+		<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>購買數量</td><td>-</td><td>內容</td></tr>
+		<tr v-for="job in dat">
+			<td>{{job.id}}</td>
+			<td>{{job.jobName}}</td>
+			<td>{{job.jobUrgent}}</td>
+			<td>{{job.purchaseAmount}}</td>
+			<td><button @click="p_delJob(job.id)">從購物車移除</button></td>
+            <td>{{job.jobDescription}}</td>
+		</tr>
+	</table>
+
+</div>
+
+
+<div v-if="UI=='p_editForm'">
+	商品名稱: <input type="text"  v-model="newJob.jobName"/> <br/>
+    
+    價格: <input type="text"  v-model="newJob.jobUrgent"/> <br/>
+
+	數量: <textarea v-model="newJob.jobContent"></textarea><br>
+    
+    內容: <textarea v-model="newJob.jobDescription"></textarea><br>
+
+	<input type='button' @click="p_addJob()" value="save">
+</div>
+</div>
+<script>
+const role=function() {
+	let a=10;
+	function get() {
+	return a;
+	}
+}
+const todoApp= Vue.createApp({
+	data() {
+		return {
+			UI: '',
+			id: '',
+			pwd: '',
+			info: 'xx',
+			myRole: 0,
+            dat: [],
+			newJob: {
+				id: -1,
+				jobName: '',
+				jobUrgent: '',
+				jobContent: '',
+                jobDescription: ''
+                
+                
+			},
+            total:0
+		}
+	},
+	methods: {
+		setUI: function(page) {
+			this.UI=page;
+		},
+        setEditUI: function() {
+			this.setUI('signupForm');
+		},
+		checkLogin: function() {
+			/*
+			const role=Cookies.get('loginRole');
+			sessionStorage.setItem('role', role)
+			console.log(role, this.login.myRole);
+			*/
+			if (this.myRole !=null) {
+				this.setUI('loginForm');
+			} else {
+				this.setUI('loginForm');
+			}
+		},
+		login: function() {
+				const that=this;
+				let mydat = new FormData();
+				mydat.append( "account", this.account);
+				// you may also use document.getElementById('loginID').value to get that field
+				mydat.append( "pwd", this.pwd);
+				mydat.append( "act", 'login');
+
+				let url="loginCheck.php";
+				//url="loginCheck.py";
+				fetch(url,{
+					method: 'POST',
+					body: mydat // 將表單物件放入fetch的body屬性
+				})
+				.then(function(res){return res.json(); }) //取得傳回值，轉為json
+				.then(function(data){
+					console.log(data);
+					//server 設定的cookie,httponly:true時, client 端讀不到,使用json裡的資料
+					that.myRole = data.role;
+					that.checkLogin();
+				})
+		},
+        signup: function () {
+			const that=this;
+			let mydat = new FormData();
+			mydat.append( "account",(this.account) );
+            mydat.append( "pwd",(this.pwd) );
+            mydat.append( "role",(this.role) );
+
+			let url="loginCheck.php?act=signin";
+			fetch(url,{
+				method: 'POST',
+				body: mydat // 將表單物件放入fetch的body屬性
+			})
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){ 
+				console.log(data);
+				//that.setUI('signupForm');
+				//that.loadList();
+                that.setUI('loginForm');
+			})
+		},
+		loadInfo: function() {
+				const that=this;
+				let mydat = new FormData();
+				mydat.append( "act", 'showInfo');
+				let url="loginCheck.php";
+				fetch(url,{
+					method: 'POST',
+					body: mydat
+				})
+				.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+				.then(function(data){
+					that.info = data;
+
+				})
+		},
+		logout: function() {
+			//發request請server改cookie
+			const that=this;
+			let url="loginCheck.php?act=logout";
+			fetch(url)
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){
+				//調整local的變數
+				that.myRole = 0;
+				that.checkLogin();
+                that.setUI('loginForm');
+			})
+            
+		},
+		
+        
+	cart_loadList: function () {
+			const that=this; //this  ==> stands for vm6. let's save `this` to `that`
+			fetch('productControl.php?act=listPurchaseJob')
+			.then(function(response) {
+				return response.json();
+			})
+			.then(function(myJson) {
+				//we are inside the callback function, now `this` means the function, not vm6
+				//we will use `that` to access vm6
+
+				that.dat = myJson;
+				//todoApp.dat = myJson;
+                that.total=0;
+                for(let i=0;i<that.dat.length;i++)
+                {
+                    that.total+=that.dat[i].total_price;
+                }
+                that.setUI('cart');
+			});
+		},
+        
+        createOrder: function () {
+    const that = this;
+    let mydat = new FormData();
+    mydat.append("cartItems", JSON.stringify(this.dat)); // 將購物車內容轉換成 JSON 格式並放入 FormData 中
+
+    let url = "productControl.php?act=createOrder";
+    fetch(url, {
+        method: 'POST',
+        body: mydat // 將資料放入 fetch 的 body 屬性
+    })
+    .then(function(res) {
+        return res.text();
+    })
+    .then(function(data) {
+        console.log(data);
+        // 可以在這裡加入額外的處理，例如清空購物車內容或顯示成功訊息
+    });
+},
+
+
+
+        c_loadList: function () {
+			const that=this; //this  ==> stands for vm6. let's save `this` to `that`
+			fetch('productControl.php?act=listJob')
+			.then(function(response) {
+				return response.json();
+			})
+			.then(function(myJson) {
+				//we are inside the callback function, now `this` means the function, not vm6
+				//we will use `that` to access vm6
+
+				that.dat = myJson;
+				//todoApp.dat = myJson;
+                that.setUI('buyer_main');
+			});
+		},
+		c_delJob: function (id) {
+			const that=this;
+			let url="productControl.php?act=delCart&id="+id;
+			fetch(url,{
+				method: 'POST'
+			})
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){
+				console.log(data);
+				that.cart_loadList();
+			})
+		},
+
+        
+        cart_addJob: function () {
+			const that=this;
+			let mydat = new FormData();
+			mydat.append( "dat", JSON.stringify(this.newJob) );
+
+			let url="productControl.php?act=addCart";
+			fetch(url,{
+				method: 'POST',
+				body: mydat // 將表單物件放入fetch的body屬性
+			})
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){ 
+				console.log(data);
+				that.setUI('cart');
+				that.cart_loadList();
+			})
+		},
+        
+		c_setEditUI: function(job) {
+			this.newJob=job;
+			this.setUI('c_editForm');
+		},
+        setAddUI: function() {
+			this.newJob={
+				id: -1,
+				jobName: '',
+				jobUrgent: '',
+				jobContent: '',
+                jobDescription:''
+			};
+			this.setUI('c_editForm');
+		},
+		
+    p_loadList: function () {
+			const that=this; //this  ==> stands for vm6. let's save `this` to `that`
+			fetch('productControl.php?act=listJob')
+			.then(function(response) {
+				return response.json();
+			})
+			.then(function(myJson) {
+				//we are inside the callback function, now `this` means the function, not vm6
+				//we will use `that` to access vm6
+
+				that.dat = myJson;
+				//todoApp.dat = myJson;
+			});
+		},
+
+		p_delJob: function (id) {
+			const that=this;
+			let url="productControl.php?act=delJob&id="+id;
+			fetch(url,{
+				method: 'POST'
+			})
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){
+				console.log(data);
+				that.p_loadList();
+			})
+		},
+		p_addJob: function () {
+			const that=this;
+			let mydat = new FormData();
+			mydat.append( "dat", JSON.stringify(this.newJob) );
+
+			let url="productControl.php?act=addJob";
+			fetch(url,{
+				method: 'POST',
+				body: mydat // 將表單物件放入fetch的body屬性
+			})
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){ 
+				console.log(data);
+				that.setUI('p_main');
+				that.p_loadList();
+			})
+		},
+		p_setEditUI: function(job) {
+			this.newJob=job;
+			this.setUI('p_editForm');
+		},
+		p_setAddUI: function() {
+			this.newJob={
+				id: -1,
+				jobName: '',
+				jobUrgent: '',
+				jobContent: '',
+                jobDescription:''
+			};
+			this.setUI('p_editForm');
+		},
+		setUI: function(page) {
+			this.UI=page;
+		}
+ },
+    created() {
+		this.checkLogin();
+	}
+}).mount("#main");
+
+</script>
+</body></html>
