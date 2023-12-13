@@ -9,10 +9,16 @@ case "listJob":
   return;  
   
   
-  case "listPurchaseJob":
+case "listPurchaseJob":
   $jobs=getPurchaseList();
   echo json_encode($jobs);
   return;  
+  
+  
+case "listOrderJob":
+  $jobs=getOrderList();
+  echo json_encode($jobs);
+  return;    
   
   
 case "addJob":
