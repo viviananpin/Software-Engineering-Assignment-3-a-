@@ -11,19 +11,23 @@
 <div id="main">
 
 <div v-if="UI=='loginForm'">
-	Account: <input type="text"  v-model="account"/> <br/>
-	Password: <input type="text" v-model="pwd" />
+	Username: <input type="text"  v-model="username"/> <br/>
+	Password: <input type="password" v-model="password" />
 	<input type='button' @click="login()" value="log in"/> <br/>
     <input type='button' @click="setEditUI()" value="sign up"/>
 </div>
 
 <div v-if="UI=='signupForm'">
     
-    帳號: <input type="text"  v-model="account"/> <br/>
+    帳號: <input type="text"  v-model="username"/> <br/>
 
-	密碼:  <input type="text" v-model="pwd" /><br/>
+	密碼:  <input type="password" v-model="password" /><br/>
     
-    角色: <input type="text"  v-model="role"/> 
+    角色: <select v-model="role">
+		<option value="customer">Customer</option>
+		<option value="manager">Store Manager</option>
+		<option value="logistics">Logistics</option>
+	  </select><br>
 
 	<input type='button' @click="signup()" value="save">
 
@@ -142,7 +146,7 @@ const todoApp= Vue.createApp({
             account:'',
 			pwd: '',
 			info: 'xx',
-			myRole: 0,
+			myRole: 'customer',
             myID:'',
             dat: [],
 			newJob: {
@@ -198,9 +202,9 @@ const todoApp= Vue.createApp({
 		login: function() {
 				const that=this;
 				let mydat = new FormData();
-				mydat.append( "account", this.account);
+				mydat.append( "account", this.username);
 				// you may also use document.getElementById('loginID').value to get that field
-				mydat.append( "pwd", this.pwd);
+				mydat.append( "pwd", this.password);
 				mydat.append( "act", 'login');
 
 				let url="loginCheck.php";
@@ -218,7 +222,97 @@ const todoApp= Vue.createApp({
                     console.log(data.id);
 					that.checkLogin();
 				})
+				//login.php.vue
+				// Reset error
+				this.error = null;
+
+				// Form validation
+				if(!this.username || !this.password) {
+				this.error = 'Please enter username and password';
+				return;
+				}
+
+				// Call API
+				this.authenticateUser(); 
+
+
+
+
+			},
+		async authenticateUser() {
+			try {        
+				let response = await fetch('/api/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					username: this.username, 
+					password: this.password
+				})
+				});
+				
+				let result = await response.json();
+				
+				if(result.status === 'error') {
+				this.error = result.message;
+				}
+				else {
+				// Login success 
+				// Redirect 
+				}
+
+			} catch(error) {
+				this.error = 'Something went wrong';  
+			}
+			},
+
+
+		async register() {
+			
+			// Reset messages
+			this.successMsg = ''
+			this.errorMsg = ''
+
+			// Validate input
+			if(!this.username || !this.password) {
+				this.errorMsg = 'Please fill all fields';
+				return;
+			}
+
+			// Call API 
+			try {
+				let response = await fetch('/register.php', {  
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ 
+					username: this.username,
+					password: this.password,
+					role: this.role  
+				}) 
+				});
+
+				let result = await response.json();
+				
+				if(result.status === 'success'){
+				this.successMsg = result.message;    
+				} else {
+				this.errorMsg = result.message;  
+				} 
+			}
+			catch(error) {
+				this.errorMsg = 'Something went wrong';  
+			}
 		},
+
+
+
+
+
+
+
         signup: function () {
 			const that=this;
 			let mydat = new FormData();
