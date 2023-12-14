@@ -22,6 +22,31 @@ function login($account, $pwd) {
 	} else {
 		return 0;
 	}
+
+}
+
+function login2($account, $pwd) {
+	global $db;
+	//verify with DB
+	//dangerous way
+	//$sql = "select role from user where id='$id' and pwd='$pwd';";
+	//$stmt = mysqli_prepare($db, $sql );
+
+	//safer way
+	
+	$sql = "select id from user where account=? and pwd=?;";
+	$stmt = mysqli_prepare($db, $sql );
+	mysqli_stmt_bind_param($stmt, "ss", $account, $pwd);
+	
+
+	mysqli_stmt_execute($stmt); //執行SQL
+	$result = mysqli_stmt_get_result($stmt); //取得查詢結果
+	if($r = mysqli_fetch_assoc($result)) {		
+		return $r['id'];
+	} else {
+		return 0;
+	}
+
 }
 
 function signin($account, $pwd,$role){

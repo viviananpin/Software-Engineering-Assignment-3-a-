@@ -3,6 +3,7 @@ require('productModel.php');
 
 $act=$_REQUEST['act'];
 switch ($act) {
+    
 case "listJob":
   $jobs=getJobList();
   echo json_encode($jobs);
@@ -52,7 +53,8 @@ case "delCart":
     
 case "createOrder":
     $cartItems = $_POST['cartItems']; // 從 POST 請求中取得購物車的商品清單
-    createOrder($cartItems);
+    $myID=(int)$_REQUEST['myID'];
+    createOrder($cartItems,$myID);
     return;
 
 

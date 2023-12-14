@@ -143,13 +143,16 @@ const todoApp= Vue.createApp({
 			pwd: '',
 			info: 'xx',
 			myRole: 0,
+            myID:'',
             dat: [],
 			newJob: {
 				id: -1,
 				jobName: '',
 				jobUrgent: '',
 				jobContent: '',
-                jobDescription: ''
+                jobDescription: '',
+                sellerID:'', 
+                customID:''
                 
                 
 			},
@@ -211,6 +214,8 @@ const todoApp= Vue.createApp({
 					console.log(data);
 					//server 設定的cookie,httponly:true時, client 端讀不到,使用json裡的資料
 					that.myRole = data.role;
+                    that.myID= data.id;
+                    console.log(data.id);
 					that.checkLogin();
 				})
 		},
@@ -286,15 +291,14 @@ const todoApp= Vue.createApp({
 			});
 		},
         
-        createOrder: function () {
+       createOrder: function () {
     const that = this;
     let mydat = new FormData();
     mydat.append("cartItems", JSON.stringify(this.dat)); // 將購物車內容轉換成 JSON 格式並放入 FormData 中
-
-    let url = "productControl.php?act=createOrder";
+    let url = "productControl.php?act=createOrder&myID="+this.myID;
     fetch(url, {
         method: 'POST',
-        body: mydat // 將資料放入 fetch 的 body 屬性
+        body:mydat // 將資料放入 fetch 的 body 屬性
     })
     .then(function(res) {
         return res.text();
@@ -303,7 +307,8 @@ const todoApp= Vue.createApp({
         console.log(data);
         // 可以在這裡加入額外的處理，例如清空購物車內容或顯示成功訊息
     });
-},
+}
+,
 
 
 
@@ -364,7 +369,9 @@ const todoApp= Vue.createApp({
 				jobName: '',
 				jobUrgent: '',
 				jobContent: '',
-                jobDescription:''
+                jobDescription:'',
+                 sellerID:'', 
+                customID:''
 			};
 			this.setUI('c_editForm');
 		},

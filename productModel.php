@@ -114,48 +114,36 @@ function delJob($id) {
 }
 
 // 在你的其他功能後面新增一個新的函式
-function createOrder($orderData) {
+function createOrder($orderData,$myID) {
     global $db;
 
     // 假設 order 資料表中有 id、jobName、jobUrgent、jobContent、jobDescription 等欄位
-    $sql = "INSERT INTO `order` (orderID, id, jobName, jobUrgent, jobContent, jobDescription) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO `order` (id, jobName, jobUrgent, jobContent, jobDescription, sellerID, customID) VALUES (?, ?, ?, ?, ?,?,?)";
 
     // 解析字串為陣列
     $cartItems = json_decode($orderData, true);
 
-    // 取得購物車商品的相關資訊
-    $orderID = null; // 這裡暫時設置為 null，待後續處理
-    $id = [];
-    $jobNames = [];
-    $jobUrgents = [];
-    $jobContents = [];
-    $jobDescriptions = [];
-
-    // 取得所有商品的資訊
-    foreach ($cartItems as $item) {
-        $id[] = $item['id'];
-        $jobNames[] = $item['jobName'];
-        $jobUrgents[] = $item['jobUrgent'];
-        $jobContents[] = $item['jobContent'];
-        $jobDescriptions[] = $item['jobDescription'];
-    }
-
-    // 將取得的商品資訊用逗號連接成字串
-    $idStr = implode(',', $id);
-    $jobNamesStr = implode(',', $jobNames);
-    $jobUrgentsStr = implode(',', $jobUrgents);
-    $jobContentsStr = implode(',', $jobContents);
-    $jobDescriptionsStr = implode(',', $jobDescriptions);
-
-    // 使用 prepared statement 預備 SQL 指令
     $stmt = mysqli_prepare($db, $sql);
-    mysqli_stmt_bind_param($stmt, "isssss", $orderID, $idStr, $jobNamesStr, $jobUrgentsStr, $jobContentsStr, $jobDescriptionsStr);
-    mysqli_stmt_execute($stmt);
+
+    // 取得每個商品的資訊並插入資料表
+    foreach ($cartItems as $item) {
+        $id = $item['id'];
+        $jobName = $item['jobName'];
+        $jobUrgent = $item['jobUrgent'];
+        $jobContent = $item['jobContent'];
+        $jobDescription = $item['jobDescription'];
+        $sellerID = $item['sellerID'];
+        $customID = $myID;
+
+        mysqli_stmt_bind_param($stmt, "issssss", $id, $jobName, $jobUrgent, $jobContent, $jobDescription,$sellerID, $customID);
+        mysqli_stmt_execute($stmt);
+    }
 
     // 返回成功訊息或其他相關資訊
     echo "Order created successfully.";
     return;
 }
+
 
 
 ?>

@@ -47,7 +47,8 @@ const todoApp= Vue.createApp({
 			id: '',
 			pwd: '',
 			info: 'xx',
-			myRole: 0
+			myRole: 0,
+            myID:''
 		}
 	},
 	methods: {
@@ -88,6 +89,7 @@ const todoApp= Vue.createApp({
 					console.log(data);
 					//server 設定的cookie,httponly:true時, client 端讀不到,使用json裡的資料
 					that.myRole = data.role;
+                    that.myID=data.id;
 					that.checkLogin();
 				})
 		},
