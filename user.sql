@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-12-13 04:29:37
+-- 產生時間： 2023-12-19 08:23:00
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -28,20 +28,22 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `user` (
-  id INT(11) PRIMARY KEY AUTO_INCREMENT,
-  username VARCHAR(100) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  role ENUM('customer', 'manager', 'logistics') NOT NULL
+  `id` int(10) NOT NULL,
+  `pwd` varchar(30) NOT NULL,
+  `role` varchar(11) NOT NULL DEFAULT '0',
+  `account` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- 傾印資料表的資料 `user`
 --
 
-INSERT INTO `user` (username, password, role) VALUES
-('111','111', 'manager'),
-('222','222', 'logistics'),
-('333','333', 'manager');
+INSERT INTO `user` (`id`, `pwd`, `role`, `account`) VALUES
+(1, '111', '商家', '111'),
+(2, '222', '物流', '222'),
+(3, '333', '商家', '333'),
+(5, '555', '買家', '555'),
+(12, '666', '買家', '666');
 
 --
 -- 已傾印資料表的索引
@@ -50,8 +52,8 @@ INSERT INTO `user` (username, password, role) VALUES
 --
 -- 資料表索引 `user`
 --
---ALTER TABLE `user`
---  ADD PRIMARY KEY (`id`);
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
@@ -60,9 +62,9 @@ INSERT INTO `user` (username, password, role) VALUES
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `user`
 --
---ALTER TABLE `user`
---  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
---COMMIT;
+ALTER TABLE `user`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

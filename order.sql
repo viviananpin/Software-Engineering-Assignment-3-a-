@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-12-13 04:29:13
+-- 產生時間： 2023-12-19 08:22:45
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.2.4
 
@@ -32,20 +32,25 @@ CREATE TABLE `order` (
   `id` varchar(11) NOT NULL,
   `jobName` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `jobUrgent` varchar(11) DEFAULT NULL,
-  `jobContent` varchar(11) DEFAULT NULL,
+  `jobContent` int(11) DEFAULT NULL,
   `jobDescription` varchar(50) NOT NULL,
   `sellerID` int(11) NOT NULL,
-  `customID` int(11) NOT NULL
+  `customID` int(11) NOT NULL,
+  `orderStatus` varchar(25) NOT NULL,
+  `result` int(11) DEFAULT NULL,
+  `feedback` int(1) DEFAULT NULL,
+  `totalQuantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- 傾印資料表的資料 `order`
 --
 
-INSERT INTO `order` (`orderID`, `id`, `jobName`, `jobUrgent`, `jobContent`, `jobDescription`, `sellerID`, `customID`) VALUES
-(14, '3,52', '平板,商品C', '800,300', '1,10', ',Cc', 0, 0),
-(15, '3,4,52', '平板,鍵盤,商品C', '800,400,300', '1,5,10', ',,Cc', 0, 0),
-(16, '1,3,52', '手機,平板,商品C', '1000,800,30', '2,1,10', ',,Cc', 0, 0);
+INSERT INTO `order` (`orderID`, `id`, `jobName`, `jobUrgent`, `jobContent`, `jobDescription`, `sellerID`, `customID`, `orderStatus`, `result`, `feedback`, `totalQuantity`) VALUES
+(226, '9', '手機', '1003', 1, '', 1, 5, 'Shipped', 1003, NULL, 0),
+(227, '2', '電腦', '500', 2, '', 1, 5, 'Arrived', 1000, 4, 0),
+(228, '83', '商品B', '66', 1, 'Bb', 3, 5, 'Shipped', 66, NULL, 0),
+(229, '50', '商品A', '200', 3, 'Aa', 3, 5, 'Shipped', 600, NULL, 0);
 
 --
 -- 已傾印資料表的索引
@@ -65,7 +70,7 @@ ALTER TABLE `order`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `order`
 --
 ALTER TABLE `order`
-  MODIFY `orderID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `orderID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=230;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
