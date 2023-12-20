@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Log in Page</title>
+</head>
+
+<body>
+
+<!--使用者註冊-->
+<form id="SignInfo" method="post" >
+    帳號：<input type = "text" name = "MemberName"><br/>
+    密碼：<input type = "password" name = "MemberCode"><br/>
+    身分：
+        <select name="Identity" ><br>
+        <option value = "customer" selected>顧客</option>
+        <option value = "manager" selected>商家</option>
+        <option value = "logistics" selected>物流</option>
+        </select> <br>
+        <br/>
+    <!--註冊-->
+    <input type ='button' onClick="Sign()" value="Sign">
+    <br/>
+</form>
+
+<script language="javascript">
+
+    function loadURL(URL) {
+        //向URL發出request
+        fetch(URL,{
+            method: 'POST', // or 'GET'
+        })
+        .then(function(res){ //fetch的callback function，傳回值是promise物件: res
+            //將res的內容轉為文字，傳給下一個Callback function
+            return res.text();
+        })
+        .then(function(data){ //下一個callback function，參數data是上一個callback傳進來的文字
+            
+            //找到要顯示內容的div
+            let div = document.getElementById('SignInfo');
+            //將傳進來的文字放進div中
+            div.innerHTML=data;
+        })
+    }
+
+    function Sign() {
+        //取得表單物件
+        let form = document.getElementById('SignInfo');
+        //用表單內容產生一個 formdata物件
+        let mydat = new FormData(form);
+        //console.log(mydat)
+
+        let url="11Sign.php";
+        fetch(url,{
+            method: 'POST',
+            body: mydat // 將表單物件放入fetch的body屬性
+        })
+        .then(function(res){return res.text(); }) //取得傳回值，轉為文字
+    }
+</script>
+</body>
+</html>

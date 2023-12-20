@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-12-18 07:24:03
+-- 產生時間： 2023-12-20 21:13:18
 -- 伺服器版本： 10.4.28-MariaDB
 -- PHP 版本： 8.0.28
 
@@ -28,7 +28,6 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `member` (
-  `MemberId` int(30) NOT NULL,
   `Account` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `Password` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `Identity` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
@@ -42,17 +41,7 @@ CREATE TABLE `member` (
 -- 資料表索引 `member`
 --
 ALTER TABLE `member`
-  ADD PRIMARY KEY (`MemberId`);
-
---
--- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
---
-
---
--- 使用資料表自動遞增(AUTO_INCREMENT) `member`
---
-ALTER TABLE `member`
-  MODIFY `MemberId` int(30) NOT NULL AUTO_INCREMENT;
+  ADD PRIMARY KEY (`Account`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
