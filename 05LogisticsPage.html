@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset = "UTF-8">
+    <title>Logistics Page</title>
+</head>
+
+<body>
+
+
+<!--商家-->
+<div v-if = "Logistics">
+    <h1> This is logistics page. </h1>
+    <!--上架和出貨功能-->
+    <button onClick="loadURL('Logistics.php')">View Order</button>
+
+    <!--商品區塊-->
+    <!--增加、修改、刪除商品-->
+    <form id = "SalerProductForm">
+    </form>
+    
+    <!--訂單區塊-->
+    <!--確認訂單並改為處理中-->
+    <!--處理中為已出貨-->
+    
+</div>
+
+<script language="javascript">
+    
+    function loadURL(URL){
+        fetch(URL,{method:'POST'})
+        .then(function(res){
+            return res.text})
+        .then(function(data){
+            let div = document.getElementById('Logistics')
+            div.innerHTML = data;
+        })
+    }
+    // 瀏覽、修改購物車
+    
+</script>
+
+
+
+
+
+
+   
+
+</body>
+</html>

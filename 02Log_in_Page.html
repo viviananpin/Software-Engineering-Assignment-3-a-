@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset = "UTF-8">
+    <title>Log in Page</title>
+</head>
+
+<body>
+
+<!--使用者登入-->
+<div v-if = "LoginInfo">
+    <h1>Log in.</h1>
+    <form id = "MemberForm">
+        帳號：<input type = "text" name = "MemberName"><br/>
+        密碼：<input type = "password" name = "MemberCode"><br/>
+        <br/>
+        <!--登入-->
+        <input type = 'button' onclick="Login()" value="Log In"/><br/>
+        <br/>
+　　</form>
+</div>
+
+
+
+
+
+
+<script language="javascript">
+    // 登入指令
+    function login(){
+        const form = document.getElementById('UserId');
+    }
+</script>
+</script>
+</body>
+</html>

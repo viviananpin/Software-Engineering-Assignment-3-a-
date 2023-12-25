@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset = "UTF-8">
+    <title>Buyer Page</title>
+</head>
+
+<body>
+
+<!--買家-->
+<div v-if = "Buyer">
+    <h1>This is buyer page.</h1>
+    <!--瀏覽商品、加入購物車-->
+    <button onClick="loadURL('Buyer_ViewProduct.php')">View Product</button>
+    <!--查看、修改、刪除購物車-->
+    <button onClick="loadURL('Buyer_ViewCart.php')">View Cart</button>
+    <!--送出訂單（送出的部分從購物車消失）-->
+    <!--查看訂單狀態-->
+    <button onClick="loadURL('Buyer_ViewOrder.php')">View Order</button>
+    <!--商家滿意度評價-->
+    <button onClick="loadURL('Buyer_Evaluate.php')">Evaluate</button>
+</div>
+
+<script language="javascript">
+    
+    function loadURL(URL){
+        fetch(URL,{method:'POST'})
+        .then(function(res){
+            return res.text})
+        .then(function(data){
+            let div = document.getElementById('Buyer')
+            div.innerHTML = data;
+        })
+    }
+    // 瀏覽、修改購物車
+    
+</script>
+
+
+
+
+
+
+   
+
+</body>
+</html>
